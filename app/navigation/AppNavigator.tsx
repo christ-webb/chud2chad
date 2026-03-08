@@ -1,9 +1,10 @@
 import React from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 
-// Import screens (create these files separately)
+// Import screens
 import IndexScreen from '../screens/IndexScreen';
 import PrologueScreen from '../screens/PrologueScreen';
 import SelectStyleScreen from '../screens/SelectStyleScreen';
@@ -16,14 +17,22 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      fallback={
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#A8CFFF' }}>
+          <ActivityIndicator size="large" color="#1E3A5F" />
+          <Text style={{ marginTop: 16, color: '#1E3A5F', fontSize: 16 }}>Loading...</Text>
+        </View>
+      }
+    >
       <Stack.Navigator
         initialRouteName="Index"
         screenOptions={{
           headerShown: false,
-          cardStyle: { backgroundColor: '#E8F4FF' },
+          cardStyle: { backgroundColor: '#A8CFFF' },
           gestureEnabled: true,
           gestureDirection: 'horizontal',
+          animationEnabled: true,
         }}
       >
         <Stack.Screen name="Index" component={IndexScreen} />

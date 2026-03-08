@@ -16,6 +16,8 @@ interface Props {
 }
 
 export default function IndexScreen({ navigation }: Props) {
+  console.log('IndexScreen rendering');
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -25,7 +27,10 @@ export default function IndexScreen({ navigation }: Props) {
 
         <TouchableOpacity
           style={styles.startButton}
-          onPress={() => navigation.navigate('Prologue')}
+          onPress={() => {
+            console.log('Start button pressed');
+            navigation.navigate('Prologue');
+          }}
           activeOpacity={0.8}
         >
           <Text style={styles.startButtonText}>Start</Text>
