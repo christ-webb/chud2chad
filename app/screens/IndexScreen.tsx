@@ -1,89 +1,141 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types';
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { useEffect, useRef } from "react";
+import { Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 
-type IndexScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Index'>;
+const { width, height } = Dimensions.get("window");
 
-interface Props {
-  navigation: IndexScreenNavigationProp;
-}
+export default function WelcomeScreen() {
+  const router = useRouter();
 
-export default function IndexScreen({ navigation }: Props) {
-  console.log('IndexScreen rendering');
-  
+  const chudAnim = useRef(new Animated.Value(-width * 2)).current;
+  const twoAnim = useRef(new Animated.Value(height * 2)).current;
+  const chadAnim = useRef(new Animated.Value(width * 2)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.delay(500),
+      Animated.spring(chudAnim, {
+        toValue: 0,
+        friction: 6,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.spring(twoAnim, {
+        toValue: 0,
+        friction: 5,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.spring(chadAnim, {
+        toValue: 0,
+        friction: 6,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.titleCard}>
-          <Text style={styles.title}>CHUD2CHAD</Text>
-        </View>
+    <LinearGradient colors={["#84A6FF", "#D8F0FC"]} style={styles.container}>
+      <Image
+        source={require("../assets/images/light-gray-kraft-paper-textured-background_53876-147736.avif")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      />
 
-        <TouchableOpacity
-          style={styles.startButton}
-          onPress={() => {
-            console.log('Start button pressed');
-            navigation.navigate('Prologue');
-          }}
-          activeOpacity={0.8}
+      <View style={styles.titleContainer}>
+        <Animated.Text
+          style={[styles.title, { transform: [{ translateX: chudAnim }] }]}
         >
-          <Text style={styles.startButtonText}>Start</Text>
-        </TouchableOpacity>
+          CHUD
+        </Animated.Text>
+        <Animated.Text
+          style={[styles.title, { transform: [{ translateY: twoAnim }] }]}
+        >
+          2
+        </Animated.Text>
+        <Animated.Text
+          style={[styles.title, { transform: [{ translateX: chadAnim }] }]}
+        >
+          CHAD
+        </Animated.Text>
       </View>
-    </SafeAreaView>
+
+      <View style={styles.contentBox}>
+      </View>
+
+      <TouchableOpacity
+        activeOpacity={0.6}
+        style={styles.button}
+        onPress={() => router.push("/PrologueScreen" as any)}
+      >
+        <Text style={styles.buttonText}>Start</Text>
+      </TouchableOpacity>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#A8CFFF',
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  titleCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 40,
-    marginBottom: 60,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
-    width: '90%',
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+    minHeight: 90,
   },
   title: {
-    fontSize: 56,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
-    textAlign: 'center',
+    color: "#FFF",
+    fontFamily: "SquadaOne",
+    fontSize: 45,
+    fontWeight: "300",
+    textAlign: "center",
+    letterSpacing: 0.5,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
   },
-  startButton: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 20,
-    paddingHorizontal: 60,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
+  contentBox: {
+    width: 326,
+    height: 463,
+    backgroundColor: "#ECF1FD",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#A0BCFB",
+    marginBottom: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: "#ECF1FD",
+    height: 60,
+    width: 326,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    shadowColor: "#041C85",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.75,
+    shadowRadius: 4,
     elevation: 5,
   },
-  startButtonText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
-    textAlign: 'center',
+  buttonText: {
+    color: "#041C85",
+    fontFamily: "Hanuman",
+    fontWeight: "bold",
+    fontSize: 30,
+  },
+  backgroundImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.1,
   },
 });

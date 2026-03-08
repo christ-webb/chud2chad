@@ -41,7 +41,9 @@
           "photosPermission": "This app needs access to your photos to select outfit images.",
           "cameraPermission": "This app needs access to your camera to take outfit photos."
         }
-      ]
+      ],
+      "expo-font",
+      "expo-router"
     ]
   }
 }
