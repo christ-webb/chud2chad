@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   title: {
-    fontSize: 56,
+    fontSize: 44,
     fontFamily: 'SquadaOne_400Regular',
     color: '#041C85',
     textAlign: 'center',
