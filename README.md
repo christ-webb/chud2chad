@@ -100,9 +100,6 @@ For a quick start, see [QUICKSTART.md](QUICKSTART.md).
 4. **Configure environment variables**:
    Copy the example file and edit it:
    ```bash
-   cp .env.example .env
-   ```:
-   ```bash
    cd backend
    node server.js
    ```
@@ -141,7 +138,6 @@ The backend is a Node.js/Express server that:
   - `style`: Style choice (required)
   - `accessories`: JSON array of accessories (optional)
 - Returns: AI analysis JSON with strengths, improvements, and suggestions
-   ```
 
 3. **Run on your device**:
    - Press `i` for iOS simulator
@@ -194,11 +190,11 @@ This creates placeholder assets in the `assets/` directory.
 - [x] Reusable UI components (StyleCard, ColorSwatch)
 
 ### Future Enhancements
-- [ ] Result sharing feature (social media export)
-- [ ] History/past results storage (local persistence)
-- [ ] Additional style categories
-- [ ] User profile and preferences
-- [*Photo Library**: To select existing photos
+- esult sharing feature (social media export)
+- History/past results storage (local persistence)
+- Additional style categories
+- User profile and preferences
+- Photo library to select existing photos
 
 ## Testing
 
@@ -213,10 +209,10 @@ Test the complete flow:
  (`node backend/server.js`)
 - Use your local IP address in `.env`, not `localhost`
 - Check firewall settings allow connections on port 3000nt variables with actual API keys
-- [ ] Test on physical device
-- [ ] Add error handling and loading states
-- [ ] Implement result sharing feature
-- [ ] Add history/past results storage
+- Test on physical device
+- Add error handling and loading states
+- Implement result sharing feature
+- Add history/past results storage
 
 ## Troubleshooting
 
