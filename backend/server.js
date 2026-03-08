@@ -7,9 +7,20 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS middleware - CRITICAL for React Native to connect
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // Configure multer for file uploads
 const upload = multer({
-  dest: 'uploads/',
+  dest: path.join(__dirname, 'uploads'),
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
@@ -23,8 +34,10 @@ const upload = multer({
 });
 
 // Ensure uploads directory exists
-if (!fs.existsSync('uploads')) {
-  fs.mkdirSync('uploads');
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('Created uploads directory:', uploadsDir);
 }
 
 // Health check endpoint
@@ -53,7 +66,7 @@ app.post('/api/analyze', upload.single('image'), (req, res) => {
   console.log(`Analyzing outfit: style=${style}, accessories=${accessoriesJson}`);
 
   // Spawn Python process to run analyze.py
-  const python = spawn('python', [
+  const python = spawn('python3', [
     path.join(__dirname, '../analyze.py'),
     imagePath,
     style,
