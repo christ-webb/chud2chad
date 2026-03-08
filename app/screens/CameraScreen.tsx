@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
   Image,
+  Animated,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
@@ -24,6 +25,24 @@ interface Props {
 export default function CameraScreen({ navigation, route }: Props) {
   const { style, accessories } = route.params;
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const slideAnim = useRef(new Animated.Value(100)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        friction: 6,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   const requestPermissions = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -75,12 +94,28 @@ export default function CameraScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Upload Your Outfit</Text>
-        <Text style={styles.subtitle}>
-          Take a photo or choose one from your gallery
-        </Text>
+    <View style={styles.container}>
+      <LinearGradient
+        colors={['#84A6FF', '#D8F0FC']}
+        style={StyleSheet.absoluteFillObject}
+      />
+      
+      <View style={[StyleSheet.absoluteFillObject, styles.textureOverlay]} />
+
+      <Animated.View
+        style={[
+          styles.animatedContent,
+          {
+            transform: [{ translateY: slideAnim }],
+            opacity: fadeAnim,
+          },
+        ]}
+      >
+        <View style={styles.content}>
+          <Text style={styles.title}>UPLOAD YOUR OUTFIT</Text>
+          <Text style={styles.subtitle}>
+            Take a photo or choose one from your gallery
+          </Text>
 
         {imageUri ? (
           <View style={styles.previewContainer}>
@@ -89,7 +124,7 @@ export default function CameraScreen({ navigation, route }: Props) {
               style={styles.retakeButton}
               onPress={() => setImageUri(null)}
             >
-              <Text style={styles.retakeButtonText}>Choose Different Photo</Text>
+              <Text style={styles.retakeButtonText}>Change Photo</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -99,7 +134,7 @@ export default function CameraScreen({ navigation, route }: Props) {
               onPress={takePhoto}
               activeOpacity={0.8}
             >
-              <Text style={styles.actionButtonText}>📷 Take Photo</Text>
+              <Text style={styles.actionButtonText}>📷 TAKE PHOTO</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -107,7 +142,7 @@ export default function CameraScreen({ navigation, route }: Props) {
               onPress={pickImage}
               activeOpacity={0.8}
             >
-              <Text style={styles.actionButtonText}>🖼️ Choose from Gallery</Text>
+              <Text style={styles.actionButtonText}>🖼️ CHOOSE FROM GALLERY</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -120,34 +155,42 @@ export default function CameraScreen({ navigation, route }: Props) {
             onPress={handleContinue}
             activeOpacity={0.8}
           >
-            <Text style={styles.continueButtonText}>Continue</Text>
+            <Text style={styles.continueButtonText}>CONTINUE</Text>
           </TouchableOpacity>
         </View>
       )}
-    </SafeAreaView>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#A8CFFF',
+  },
+  textureOverlay: {
+    backgroundColor: 'rgba(240, 240, 240, 0.2)',
+  },
+  animatedContent: {
+    flex: 1,
   },
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingTop: 80,
   },
   title: {
     fontSize: 48,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontFamily: 'SquadaOne_400Regular',
+    color: '#041C85',
     textAlign: 'center',
     marginBottom: 12,
+    letterSpacing: 1,
   },
   subtitle: {
     fontSize: 16,
-    color: '#FFFFFF',
+    fontFamily: 'Hanuman_400Regular',
+    color: '#041C85',
     textAlign: 'center',
     lineHeight: 24,
     paddingHorizontal: 20,
@@ -159,7 +202,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   actionButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     paddingVertical: 24,
     paddingHorizontal: 32,
     borderRadius: 16,
@@ -171,8 +214,8 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontFamily: 'Hanuman_700Bold',
+    color: '#041C85',
     textAlign: 'center',
   },
   previewContainer: {
@@ -188,35 +231,36 @@ const styles = StyleSheet.create({
   },
   retakeButton: {
     marginTop: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 12,
   },
   retakeButtonText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1E3A5F',
+    fontFamily: 'Hanuman_700Bold',
+    color: '#041C85',
   },
   bottomButtonContainer: {
     paddingHorizontal: 24,
-    paddingVertical: 20,
+    paddingVertical: 32,
   },
   continueButton: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 18,
-    paddingHorizontal: 32,
+    backgroundColor: '#041C85',
+    paddingVertical: 20,
+    paddingHorizontal: 48,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
   },
   continueButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontSize: 24,
+    fontFamily: 'SquadaOne_400Regular',
+    color: '#FFFFFF',
     textAlign: 'center',
+    letterSpacing: 1.5,
   },
 });

@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   ActivityIndicator,
   Alert,
+  Animated,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList, HygieneItem, HygieneChecklistItemData } from '../types';
@@ -40,6 +41,24 @@ export default function HygieneChecklistScreen({ navigation, route }: Props) {
   const { style, accessories, imageUri } = route.params;
   const [checkedItems, setCheckedItems] = useState<HygieneItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const slideAnim = useRef(new Animated.Value(100)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        friction: 6,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   const toggleItem = (item: HygieneItem) => {
     setCheckedItems((prev) =>
@@ -85,10 +104,29 @@ export default function HygieneChecklistScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <View style={styles.container}>
+      <LinearGradient
+        colors={['#84A6FF', '#D8F0FC']}
+        style={StyleSheet.absoluteFillObject}
+      />
+      
+      <View style={[StyleSheet.absoluteFillObject, styles.textureOverlay]} />
+
+      <Animated.View
+        style={[
+          styles.animatedContent,
+          {
+            transform: [{ translateY: slideAnim }],
+            opacity: fadeAnim,
+          },
+        ]}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
         <View style={styles.content}>
-          <Text style={styles.title}>Final Style Check</Text>
+          <Text style={styles.title}>FINAL STYLE CHECK</Text>
           <Text style={styles.subtitle}>
             Answer these hygiene questions honestly to get an accurate grade
           </Text>
@@ -119,7 +157,7 @@ export default function HygieneChecklistScreen({ navigation, route }: Props) {
 
           {isLoading && (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#1E3A5F" />
+              <ActivityIndicator size="large" color="#041C85" />
               <Text style={styles.loadingText}>
                 Analyzing your outfit with AI...
               </Text>
@@ -136,37 +174,45 @@ export default function HygieneChecklistScreen({ navigation, route }: Props) {
           activeOpacity={0.8}
         >
           <Text style={styles.gradeButtonText}>
-            {isLoading ? 'Analyzing...' : 'Get My Grade'}
+            {isLoading ? 'ANALYZING...' : 'GET MY GRADE'}
           </Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#A8CFFF',
+  },
+  textureOverlay: {
+    backgroundColor: 'rgba(240, 240, 240, 0.2)',
+  },
+  animatedContent: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
+    paddingTop: 80,
   },
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 60,
   },
   title: {
     fontSize: 48,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontFamily: 'SquadaOne_400Regular',
+    color: '#041C85',
     textAlign: 'center',
     marginBottom: 12,
+    letterSpacing: 1,
   },
   subtitle: {
     fontSize: 16,
-    color: '#FFFFFF',
+    fontFamily: 'Hanuman_400Regular',
+    color: '#041C85',
     textAlign: 'center',
     lineHeight: 24,
     paddingHorizontal: 20,
@@ -178,14 +224,14 @@ const styles = StyleSheet.create({
   checklistItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     padding: 20,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
   checkbox: {
     width: 32,
@@ -199,8 +245,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#6B9FD8',
-    borderColor: '#1E3A5F',
+    backgroundColor: '#041C85',
+    borderColor: '#041C85',
   },
   checkmark: {
     color: '#FFFFFF',
@@ -210,8 +256,8 @@ const styles = StyleSheet.create({
   checklistText: {
     flex: 1,
     fontSize: 18,
-    color: '#1E3A5F',
-    fontWeight: '600',
+    fontFamily: 'Hanuman_700Bold',
+    color: '#041C85',
   },
   loadingContainer: {
     marginTop: 40,
@@ -220,31 +266,32 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#1E3A5F',
-    fontWeight: '600',
+    fontFamily: 'Hanuman_700Bold',
+    color: '#041C85',
   },
   buttonContainer: {
     paddingHorizontal: 24,
-    paddingVertical: 20,
+    paddingVertical: 32,
   },
   gradeButton: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 18,
-    paddingHorizontal: 32,
+    backgroundColor: '#041C85',
+    paddingVertical: 20,
+    paddingHorizontal: 48,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
   },
   gradeButtonDisabled: {
     opacity: 0.6,
   },
   gradeButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontSize: 24,
+    fontFamily: 'SquadaOne_400Regular',
+    color: '#FFFFFF',
     textAlign: 'center',
+    letterSpacing: 1.5,
   },
 });

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   Image,
+  Animated,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
@@ -25,6 +26,24 @@ interface Props {
 
 export default function ResultsScreen({ navigation, route }: Props) {
   const { analysis, grade, imageUri } = route.params;
+  const slideAnim = useRef(new Animated.Value(100)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        friction: 6,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   const getGradeEmoji = (label: string) => {
     switch (label) {
@@ -58,11 +77,30 @@ export default function ResultsScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <View style={styles.container}>
+      <LinearGradient
+        colors={['#84A6FF', '#D8F0FC']}
+        style={StyleSheet.absoluteFillObject}
+      />
+      
+      <View style={[StyleSheet.absoluteFillObject, styles.textureOverlay]} />
+
+      <Animated.View
+        style={[
+          styles.animatedContent,
+          {
+            transform: [{ translateY: slideAnim }],
+            opacity: fadeAnim,
+          },
+        ]}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
         <View style={styles.content}>
           {/* Title */}
-          <Text style={styles.title}>Your Results</Text>
+          <Text style={styles.title}>YOUR RESULTS</Text>
 
           {/* Grade Card */}
           <View style={styles.gradeCard}>
@@ -204,36 +242,43 @@ export default function ResultsScreen({ navigation, route }: Props) {
           onPress={handleStartOver}
           activeOpacity={0.8}
         >
-          <Text style={styles.startOverButtonText}>Start Over</Text>
+          <Text style={styles.startOverButtonText}>START OVER</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#A8CFFF',
+  },
+  textureOverlay: {
+    backgroundColor: 'rgba(240, 240, 240, 0.2)',
+  },
+  animatedContent: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 20,
+    paddingTop: 80,
   },
   content: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 60,
   },
   title: {
     fontSize: 48,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontFamily: 'SquadaOne_400Regular',
+    color: '#041C85',
     textAlign: 'center',
     marginBottom: 24,
+    letterSpacing: 1,
   },
   gradeCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 20,
     padding: 24,
     marginBottom: 20,
@@ -250,9 +295,10 @@ const styles = StyleSheet.create({
   },
   gradeLabel: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontFamily: 'SquadaOne_400Regular',
+    color: '#041C85',
     marginBottom: 16,
+    letterSpacing: 1,
   },
   scoreContainer: {
     width: '100%',
@@ -272,8 +318,8 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontFamily: 'Hanuman_700Bold',
+    color: '#041C85',
     textAlign: 'center',
   },
   scoreBreakdown: {
@@ -284,7 +330,8 @@ const styles = StyleSheet.create({
   },
   breakdownText: {
     fontSize: 14,
-    color: '#6B7280',
+    fontFamily: 'Hanuman_400Regular',
+    color: '#041C85',
   },
   imageContainer: {
     marginBottom: 20,
@@ -302,25 +349,26 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   section: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
   sectionTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontFamily: 'Hanuman_700Bold',
+    color: '#041C85',
     marginBottom: 12,
   },
   summaryText: {
     fontSize: 16,
-    color: '#374151',
+    fontFamily: 'Hanuman_400Regular',
+    color: '#041C85',
     lineHeight: 24,
   },
   colorPalette: {
@@ -354,14 +402,15 @@ const styles = StyleSheet.create({
   },
   bulletPoint: {
     fontSize: 20,
-    color: '#1E3A5F',
+    color: '#041C85',
     marginRight: 8,
     lineHeight: 24,
   },
   listText: {
     flex: 1,
     fontSize: 15,
-    color: '#374151',
+    fontFamily: 'Hanuman_400Regular',
+    color: '#041C85',
     lineHeight: 24,
   },
   subsection: {
@@ -369,44 +418,46 @@ const styles = StyleSheet.create({
   },
   subsectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1E3A5F',
+    fontFamily: 'Hanuman_700Bold',
+    color: '#041C85',
     marginBottom: 8,
   },
   noteCard: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: 'rgba(254, 243, 199, 0.9)',
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#F59E0B',
   },
   noteText: {
     fontSize: 14,
+    fontFamily: 'Hanuman_400Regular',
     color: '#92400E',
     fontStyle: 'italic',
     lineHeight: 20,
   },
   buttonContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 32,
     backgroundColor: 'transparent',
   },
   startOverButton: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 18,
-    paddingHorizontal: 32,
+    backgroundColor: '#041C85',
+    paddingVertical: 20,
+    paddingHorizontal: 48,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
   },
   startOverButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1E3A5F',
+    fontSize: 24,
+    fontFamily: 'SquadaOne_400Regular',
+    color: '#FFFFFF',
     textAlign: 'center',
+    letterSpacing: 1.5,
   },
 });
