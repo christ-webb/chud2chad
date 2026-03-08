@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "CHUD2CHAD",
+    "slug": "chud2chad",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#A8CFFF"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.chud2chad.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to your camera to take outfit photos for style analysis.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select outfit photos for style analysis."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#A8CFFF"
+      },
+      "package": "com.chud2chad.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "This app needs access to your photos to select outfit images.",
+          "cameraPermission": "This app needs access to your camera to take outfit photos."
+        }
+      ]
+    ]
+  }
+}
