@@ -1,13 +1,26 @@
+import React, { useEffect, useRef } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Animated, 
+  Dimensions, 
+  Image 
+} from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
-import { Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
 
 const { width, height } = Dimensions.get("window");
 
-export default function WelcomeScreen() {
-  const router = useRouter();
+type IndexScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Index'>;
 
+interface Props {
+  navigation: IndexScreenNavigationProp;
+}
+
+export default function IndexScreen({ navigation }: Props) {
   const chudAnim = useRef(new Animated.Value(-width * 2)).current;
   const twoAnim = useRef(new Animated.Value(height * 2)).current;
   const chadAnim = useRef(new Animated.Value(width * 2)).current;
@@ -65,10 +78,14 @@ export default function WelcomeScreen() {
       <View style={styles.contentBox}>
       </View>
 
+      {/* Navigation Button */}
       <TouchableOpacity
-        activeOpacity={0.6}
+        activeOpacity={0.7}
         style={styles.button}
-        onPress={() => router.push("/PrologueScreen" as any)}
+        onPress={() => {
+          console.log('Navigating to Prologue...');
+          navigation.navigate('Prologue');
+        }}
       >
         <Text style={styles.buttonText}>Start</Text>
       </TouchableOpacity>
@@ -92,8 +109,8 @@ const styles = StyleSheet.create({
   title: {
     color: "#FFF",
     fontFamily: "SquadaOne",
-    fontSize: 45,
-    fontWeight: "300",
+    fontSize: 74, 
+    fontWeight: "400",
     textAlign: "center",
     letterSpacing: 0.5,
     textShadowColor: "rgba(0, 0, 0, 0.3)",
@@ -122,7 +139,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.75,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 8,
   },
   buttonText: {
     color: "#041C85",
