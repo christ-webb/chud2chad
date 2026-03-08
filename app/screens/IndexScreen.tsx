@@ -52,6 +52,11 @@ export default function IndexScreen({ navigation }: Props) {
   return (
     <LinearGradient colors={["#84A6FF", "#D8F0FC"]} style={styles.container}>
       <Image
+        source={require("../assets/images/IMG_1548.png")}
+        style={styles.absoluteBackground}
+        resizeMode="contain"
+      />
+      <Image
         source={require("../assets/images/light-gray-kraft-paper-textured-background_53876-147736.avif")}
         style={styles.backgroundImage}
         resizeMode="cover"
@@ -109,8 +114,8 @@ const styles = StyleSheet.create({
   title: {
     color: "#FFF",
     fontFamily: "SquadaOne",
-    fontSize: 74, 
-    fontWeight: "400",
+    fontSize: 55, 
+    fontWeight: "300",
     textAlign: "center",
     letterSpacing: 0.5,
     textShadowColor: "rgba(0, 0, 0, 0.3)",
@@ -146,6 +151,10 @@ const styles = StyleSheet.create({
     fontFamily: "Hanuman",
     fontWeight: "bold",
     fontSize: 30,
+  },
+  absoluteBackground: {
+    position: "absolute",
+    alignSelf: 'center',
   },
   backgroundImage: {
     position: "absolute",
